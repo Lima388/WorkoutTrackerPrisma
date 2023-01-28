@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model exercises {
+  id   Int    @id(map: "exercise_pk") @default(autoincrement())
+  name String @unique @db.VarChar(255)
+  sets sets[]
+}
+
+model sets {
+  id         Int       @id(map: "sets_pk") @default(autoincrement())
+  weekid     Int
+  exerciseid Int
+  reps       Int       @default(1)
+  weight     Int       @default(1)
+  weeks      weeks     @relation(fields: [weekid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sets_fk0")
+  exercises  exercises @relation(fields: [exerciseid], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "sets_fk1")
+}
+
+model weeks {
+  id   Int    @id(map: "week_pk") @default(autoincrement())
+  sets sets[]
+}
